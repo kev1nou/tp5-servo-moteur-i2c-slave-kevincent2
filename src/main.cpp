@@ -6,6 +6,8 @@
 #error [NOT_SUPPORTED] I2C Slave is not supported
 #endif
 
+static BufferedSerial serial_port(USBTX, USBRX);
+
 // Utiliser la classe I2CSlave pour créer un objet slave.
 // Consulter la documentation pour voir les méthodes disponibles.
 I2CSlave slave(I2C_SDA, I2C_SCL);
@@ -29,6 +31,8 @@ enum{On, Off};
 int etat = Off;
 
 int main() {
+  serial_port.set_baud(9600);
+
   char read_buffer[10];
   char write_buffer[10];
 
@@ -58,7 +62,7 @@ int main() {
             // Si le master envoie une requête de lecture qui nous est adressée
             case I2CSlave::WriteAddressed:
                 slave.read(read_buffer, 10);
-                printf("Read A: %s\n", read_buffer);
+                printf("Read A: %s\n\r", read_buffer);
 
                 int8_t commande_recue = read_buffer[0];
 
