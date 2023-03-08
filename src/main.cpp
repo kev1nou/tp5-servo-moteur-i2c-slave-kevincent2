@@ -50,6 +50,7 @@ int main() {
                 ///////////////////////////////////////////
                 // Retourner l'état du moteur (sa position ou OFF sous forme d'une chaine de caractères)
                 ///////////////////////////////////////////
+                write_buffer[0] = etat;
 
                 slave.write(write_buffer, strlen(write_buffer) + 1); // Includes null char
                 break;
