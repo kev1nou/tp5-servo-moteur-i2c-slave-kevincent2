@@ -26,13 +26,15 @@ PwmOut moteur(D3);
 ///////////////////////////////////////////
 enum{On, Off};
 
+uint8_t etat = Off;
+
 int main() {
   char read_buffer[10];
   char write_buffer[10];
 
   slave.address(ADDRESSE_I2C_PAR_DEFAUT << 1);
 
-  double pourcentage = 0.075;
+  double pourcentage = 0.075; //milieu
   moteur.period(0.02);
 
   while (1) {
@@ -64,7 +66,14 @@ int main() {
                 ///////////////////////////////////////////
                 if(commande_recue <= 90 && commande_recue >= -90){
                     pourcentage = (commande_recue * (2/45) + 7.5)/100;
-                    moteur.write(pourcentage); //milieu 0deg
+                    moteur.write(pourcentage); 
+                }else if(commande_recue == 127){
+                    moteur.suspend();
+                }else if(commande_recue == 126){
+                    moteur.resume();
+                    moteur.write(0.075); //retourne au milieu
+                }else{
+                   
                 }
 
                 break;
