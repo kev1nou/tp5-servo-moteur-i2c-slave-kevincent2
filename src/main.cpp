@@ -26,7 +26,7 @@ PwmOut moteur(D3);
 ///////////////////////////////////////////
 enum{On, Off};
 
-uint8_t etat = Off;
+int etat = Off;
 
 int main() {
   char read_buffer[10];
@@ -64,18 +64,27 @@ int main() {
                 ///////////////////////////////////////////
                 // Modifier l'état du moteur en fonction de la commande reçue
                 ///////////////////////////////////////////
-                if(commande_recue <= 90 && commande_recue >= -90){
-                    pourcentage = (commande_recue * (2/45) + 7.5)/100;
-                    moteur.write(pourcentage); 
-                }else if(commande_recue == 127){
-                    moteur.suspend();
-                }else if(commande_recue == 126){
-                    moteur.resume();
-                    moteur.write(0.075); //retourne au milieu
-                }else{
-                   
-                }
+                switch (etat){
+                    case Off:
+                        moteur.suspend();
 
+                        if(commande_recue == 126){
+                            moteur.resume();
+                            moteur.write(0.075); //retourne au milieu
+                            etat = On;
+                        }
+                        break;
+
+                    case On:
+                        if(commande_recue <= 90 && commande_recue >= -90){
+                            pourcentage = ((double)commande_recue * (2/45) + 7.5)/100;
+                            moteur.write(pourcentage); 
+                        }
+                        else if(commande_recue == 127){
+                            etat = Off;
+                        }
+                        break;
+                }
                 break;
         }
         
