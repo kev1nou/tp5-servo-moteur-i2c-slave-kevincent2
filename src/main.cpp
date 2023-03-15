@@ -6,7 +6,7 @@
 #error [NOT_SUPPORTED] I2C Slave is not supported
 #endif
 
-//static BufferedSerial serial_port(USBTX, USBRX);
+static BufferedSerial serial_port(USBTX, USBRX);
 
 // Utiliser la classe I2CSlave pour créer un objet slave.
 // Consulter la documentation pour voir les méthodes disponibles.
@@ -20,7 +20,7 @@ I2CSlave slave(D14, D15);
 ///////////////////////////////////////////
 // Créer un objet moteur à partir de la classe PwmOut
 ///////////////////////////////////////////
-//PwmOut moteur(D3);
+PwmOut moteur(PB_6);
 
 
 ///////////////////////////////////////////
@@ -31,15 +31,15 @@ I2CSlave slave(D14, D15);
 //int etat = Off;
 
 int main() {
-  //serial_port.set_baud(9600);
+  serial_port.set_baud(9600);
 
   char buffer[10];
   
 
   slave.address(ADDRESSE_I2C_PAR_DEFAUT << 1);
 
-  //double pourcentage = 0.075; //milieu
-  //moteur.period(0.02);
+  double pourcentage = 0.075; //milieu
+  moteur.period(0.02);
 
   while (1) {
 
@@ -69,28 +69,19 @@ int main() {
                 ///////////////////////////////////////////
                 // Modifier l'état du moteur en fonction de la commande reçue
                 ///////////////////////////////////////////
-                /*int8_t commande_recue = buffer[0];
-                switch (etat){
-                    case Off:
-                        moteur.suspend();
+                int8_t commande_recue = buffer[0];
+                printf("commande recu : %d\r\n", commande_recue);
 
-                        if(commande_recue == 126){
-                            moteur.resume();
-                            moteur.write(0.075); //retourne au milieu
-                            etat = On;
-                        }
-                        break;
-
-                    case On:
-                        if(commande_recue <= 90 && commande_recue >= -90){
-                            pourcentage = ((double)commande_recue * (2/45) + 7.5)/100;
-                            moteur.write(pourcentage); 
-                        }
-                        else if(commande_recue == 127){
-                            etat = Off;
-                        }
-                        break;
-                }*/
+                if(commande_recue == 126){
+                    moteur.resume();
+                    moteur.write(0.075); //retourne au milieu
+                }else if(commande_recue == 127){
+                    moteur.suspend();
+                }else if(commande_recue <= 90 && commande_recue >= 0){
+                    pourcentage = moteur.read_pulsewitdth_us()/20000;
+                    moteur.write(pourcentage); 
+                }
+                
                 break;
         }
         
