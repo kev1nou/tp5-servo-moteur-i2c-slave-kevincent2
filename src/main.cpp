@@ -23,23 +23,14 @@ I2CSlave slave(D14, D15);
 PwmOut moteur(PB_6);
 
 
-///////////////////////////////////////////
-// Créer une variable pour la machine à état qui gére le moteur (OFF ou Activé)
-///////////////////////////////////////////
-//enum{On, Off};
-
-//int etat = Off;
+int8_t position_moteur = -127;
 
 int main() {
   serial_port.set_baud(9600);
 
-  char buffer[10];
-  
+  char buffer[10]; 
 
-  slave.address(ADDRESSE_I2C_PAR_DEFAUT << 1);
-
-  double pourcentage = 0.075; //milieu
-  moteur.period(0.02);
+  slave.address(ADDRESSE_I2C_PAR_DEFAUT << 1);  
 
   while (1) {
 
@@ -77,9 +68,11 @@ int main() {
                     moteur.write(0.075); //retourne au milieu
                 }else if(commande_recue == 127){
                     moteur.suspend();
-                }else if(commande_recue <= 90 && commande_recue >= 0){
-                    pourcentage = moteur.read_pulsewitdth_us()/20000;
-                    moteur.write(pourcentage); 
+                }else if (commande_recue >= -90 && commande_recue <= 90) {
+                    position_moteur = commande_recue;
+                    uint16_t pulse_width = 1500 + commande_recue * 6.666;
+                    moteur.period_ms(20);
+                    moteur.pulsewidth_us(pulse_width);
                 }
                 
                 break;
