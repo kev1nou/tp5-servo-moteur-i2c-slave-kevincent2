@@ -1,3 +1,3 @@
 ## Rapport
 
-Dans notre code, nous pouvons écrire un pourcentage entre 90 et -90 au slave. On peut aussi envoyer la commande 126 pour allumer le moteur et la commande 127 pour l'éteindre. 
+Dans notre code, nous pouvons écrire un pourcentage entre 90 et -90 au slave. On peut aussi envoyer la commande 126 pour allumer le moteur et la commande 127 pour l'éteindre. Cependant, nous n'avons aucun moyen de lire l'état du moteur. Cependant, avec le code du professeur, tout le circuit fonctionne bien. Nous pouvons envoyer des données au slave et lire l'état du moteur. Nous étions rendu à comprendre comment on pouvait lire l'état du moteur avec le slave. Nous étions sur le point de faire une machine à état dans le slave pour pouvoir plus facilement envoyer la donnée de l'état du moteur au master. 
